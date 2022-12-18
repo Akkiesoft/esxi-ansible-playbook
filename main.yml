@@ -1,0 +1,17 @@
+- name: setup esxi
+  hosts: esxi
+  gather_facts: no
+  vars:
+    esxi_host: 192.168.29.71
+    esxi_user: root
+    esxi_pass: "Raspberry!814"
+    hostname: "esxi-pi4"
+    domain: "example.com"
+  tasks:  
+    - import_tasks: task/vswitch.yml
+    - import_tasks: task/portgroup.yml
+    - import_tasks: task/vmkernel.yml
+    - import_tasks: task/ntp.yml
+    - import_tasks: task/dns.yml
+    - import_tasks: task/iscsi.yml
+    - import_tasks: task/config.yml

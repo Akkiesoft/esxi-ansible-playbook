@@ -1,0 +1,14 @@
+- name: configure esxi hostname and dns servers
+  community.vmware.vmware_host_dns:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    type: static
+    host_name: "{{ hostname }}"
+    domain: "{{ domain }}"
+    dns_servers:
+      - 8.8.8.8
+    search_domains:
+      - example.com
+    validate_certs: False
+  delegate_to: localhost

@@ -1,0 +1,23 @@
+- name: enable ntp service at startup
+  community.vmware.vmware_host_service_manager:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ esxi_host }}"
+    service_name: ntpd
+    service_policy: on
+    state: present
+    validate_certs: False
+  delegate_to: localhost
+
+- name: set ntp server address
+  community.vmware.vmware_host_ntp:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ esxi_host }}"
+    ntp_servers:
+      - ntp.nict.jp
+    state: present
+    validate_certs: False
+  delegate_to: localhost

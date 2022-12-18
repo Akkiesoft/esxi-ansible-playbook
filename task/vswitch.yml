@@ -1,0 +1,15 @@
+- name: create vswitch
+  community.vmware.vmware_vswitch:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    switch: "{{ item.sw }}"
+    nics: "{{ item.nic | default(omit) }}"
+    mtu: "{{ item.mtu | default(1500) }}"
+    validate_certs: False
+  loop:
+    - sw: vSwitch0
+      nic:
+        - vmnic128
+    - sw: hoge
+  delegate_to: localhost

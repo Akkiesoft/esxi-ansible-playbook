@@ -1,0 +1,48 @@
+- name: enable iscsi
+  community.vmware.vmware_host_iscsi:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ hostname }}.{{ domain }}"
+    state: enabled
+    validate_certs: False
+  delegate_to: localhost
+
+- name: gather iscsi configuration
+  community.vmware.vmware_host_iscsi_info:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ hostname }}.{{ domain }}"
+    validate_certs: False
+  register: r
+  delegate_to: localhost
+
+- name: add a dynamic target to iscsi
+  community.vmware.vmware_host_iscsi:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ hostname }}.{{ domain }}"
+    iscsi_config:
+      vmhba_name: "{{ r.iscsi_properties.vmhba_name }}"
+      send_target:
+        address: "{{ item }}"
+    state: present
+    validate_certs: False
+  loop:
+    - 192.168.29.70
+  when: '"vmhba_name" in r.iscsi_properties'
+  delegate_to: localhost
+
+- name: rescan hba and vmfs
+  community.vmware.vmware_host_scanhba:
+    hostname: "{{ esxi_host }}"
+    username: "{{ esxi_user }}"
+    password: "{{ esxi_pass }}"
+    esxi_hostname: "{{ hostname }}.{{ domain }}"
+    rescan_vmfs: true
+    rescan_hba: true
+    refresh_storage: true
+    validate_certs: False
+  delegate_to: localhost
